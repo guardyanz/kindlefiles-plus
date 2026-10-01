@@ -4,11 +4,11 @@ Status: **release candidate only**. Do not submit until the physical Fire tablet
 
 ## Listing fields
 
-Publisher: Ribnik Studio  
-Display title: FolderKit for Fire tablets  
-Category: Utilities  
-Pricing: Paid, USD 1.99 base price (confirm banking/tax details in Developer Console)  
-Support email: wardiyanto.skm@gmail.com
+- Publisher: Ribnik Studio
+- Display title: FolderKit for Fire tablets
+- Category: Utilities
+- Pricing: Paid, USD 1.99 base price (confirm banking/tax details in Developer Console)
+- Support email: wardiyanto.skm@gmail.com
 
 Short description:
 

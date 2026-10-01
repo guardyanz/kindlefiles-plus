@@ -1,8 +1,8 @@
 # FolderKit privacy policy
 
-Effective date: 1 October 2026  
-Publisher: Ribnik Studio  
-Support: wardiyanto.skm@gmail.com
+- Effective date: 1 October 2026
+- Publisher: Ribnik Studio
+- Support: wardiyanto.skm@gmail.com
 
 FolderKit for Fire tablets is a local file manager. It does not require an account, request internet access, include advertising or analytics SDKs, or send files, file names, or duplicate hashes to Ribnik Studio.
 
