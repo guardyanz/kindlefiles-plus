@@ -134,11 +134,11 @@ def connect_sample_folder():
 def main():
     apk = next((ROOT / "artifacts" / "apk").glob("*.apk"))
     print(adb("shell", "wm", "size"), flush=True)
-    adb("shell", "wm", "size", "1920x1200")
-    adb("shell", "wm", "density", "240")
+    adb("shell", "wm", "density", "320")
     adb("shell", "settings", "put", "system", "accelerometer_rotation", "0")
     adb("shell", "settings", "put", "system", "user_rotation", "0")
     adb("shell", "settings", "put", "global", "sysui_demo_allowed", "1")
+    adb("shell", "am", "broadcast", "-a", "com.android.systemui.demo", "-e", "command", "enter")
     adb("shell", "am", "broadcast", "-a", "com.android.systemui.demo", "-e", "command", "clock", "-e", "hhmm", "0941")
     adb("shell", "am", "broadcast", "-a", "com.android.systemui.demo", "-e", "command", "battery", "-e", "level", "100", "-e", "plugged", "false")
     samples()
@@ -146,7 +146,7 @@ def main():
     adb("shell", "am", "start", "-n", f"{PACKAGE}/.MainActivity")
     wait("Connect a folder")
     time.sleep(2)
-    if screen("01-places") != (1920, 1200):
+    if screen("01-places") != (2560, 1600):
         raise RuntimeError("Tablet screenshot resolution is incorrect.")
     connect_sample_folder()
     screen("02-browser")
@@ -171,8 +171,8 @@ def main():
     screen("06-duplicates")
     metadata = {
         "device": "AOSP Android emulator API 28, Nexus 10 profile",
-        "resolution": [1920, 1200],
-        "densityDpi": 240,
+        "resolution": [2560, 1600],
+        "densityDpi": 320,
         "apk": apk.name,
         "apkSha256": hashlib.sha256(apk.read_bytes()).hexdigest(),
         "screenshots": sorted(p.name for p in OUT.glob("0*.png")),
