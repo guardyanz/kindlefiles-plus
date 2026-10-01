@@ -18,7 +18,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 
 def adb(*args):
-    return subprocess.run(["adb", *args], check=True, capture_output=True, text=True).stdout
+    return subprocess.run(["adb", *args], check=True, capture_output=True, text=True, timeout=30).stdout
 
 
 def screen(name):
@@ -31,10 +31,15 @@ def screen(name):
 
 
 def state():
-    adb("shell", "uiautomator", "dump", "/sdcard/folderkit-view.xml")
-    xml = adb("shell", "cat", "/sdcard/folderkit-view.xml")
-    (OUT / "latest-view.xml").write_text(xml, encoding="utf-8")
-    return ET.fromstring(xml)
+    for _ in range(6):
+        result = adb("shell", "uiautomator", "dump", "/sdcard/folderkit-view.xml")
+        if "dumped to" in result:
+            xml = adb("shell", "cat", "/sdcard/folderkit-view.xml")
+            (OUT / "latest-view.xml").write_text(xml, encoding="utf-8")
+            return ET.fromstring(xml)
+        print(f"Waiting for UI hierarchy: {result.strip()}", flush=True)
+        time.sleep(2)
+    raise RuntimeError("UI Automator could not capture a settled hierarchy.")
 
 
 def find(tree, label, attribute="text", contains=False):
@@ -102,7 +107,7 @@ def connect_sample_folder():
         if node is not None:
             tap_node(node)
             break
-        for label in ("Download", "Internal storage", model):
+        for label in ("Download", "Downloads", "Internal storage", model):
             node = find(tree, label)
             if node is not None:
                 tap_node(node)
@@ -144,6 +149,7 @@ def main():
     samples()
     print(adb("install", "-r", str(apk)), flush=True)
     adb("shell", "am", "start", "-n", f"{PACKAGE}/.MainActivity")
+    time.sleep(5)
     wait("Connect a folder")
     time.sleep(2)
     if screen("01-places") != (2560, 1600):
