@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">KindleFiles+</string>
+    <string name="app_name">FolderKit</string>
     <string name="tagline">A little order. A lot more space.</string>
     <string name="places">My places</string>
     <string name="favorites">Favorites</string>
     <string name="tools">File tools</string>
     <string name="connect">Connect a folder</string>
-    <string name="connect_hint">Choose a folder on your tablet, SD card, or USB drive. You decide what KindleFiles+ can access.</string>
+    <string name="connect_hint">Choose a folder on your tablet, SD card, or USB drive. You decide what FolderKit can access.</string>
     <string name="import_files">Pick downloads / files</string>
     <string name="import_hint">Use the system picker for files in Downloads when folder access is unavailable.</string>
     <string name="welcome">Your files,\nwithin reach.</string>
@@ -51,7 +51,7 @@
     <string name="select">Select %1$s</string>
     <string name="files_selected">%1$d selected</string>
     <string name="clear_selection">Clear selection</string>
-    <string name="all_files">Select visible files</string>
+    <string name="all_files">Select visible items</string>
     <string name="favorite_add">Save favorite</string>
     <string name="favorite_remove">Remove favorite</string>
     <string name="forget">Disconnect folder</string>
@@ -64,9 +64,9 @@
     <string name="scan_empty">No identical files found.</string>
     <string name="scan_results">%1$d duplicate group(s)</string>
     <string name="scan_group">Group %1$d · %2$d files</string>
-    <string name="zip_hint">Select files in Browse, then choose Create ZIP. To unpack, use Extract ZIP in an archive’s action menu.</string>
+    <string name="zip_hint">Select files or folders in Browse, then choose Create ZIP. To unpack, use Extract ZIP in an archive’s action menu.</string>
     <string name="widget_title">A shortcut to your folder</string>
-    <string name="widget_hint">Add the KindleFiles+ folder widget from your launcher, then choose a folder. Availability depends on your launcher.</string>
+    <string name="widget_hint">Add the FolderKit folder widget from your launcher, then choose a folder. Availability depends on your launcher.</string>
     <string name="widget_configure">Choose widget folder</string>
     <string name="widget_open">Open folder</string>
     <string name="working">Working…</string>
@@ -81,8 +81,8 @@
     <string name="item_count">%1$d item(s)</string>
     <string name="choose_first">Connect and open a folder first.</string>
     <string name="destination">Choose a destination folder</string>
-    <string name="copied">Copied and verified %1$d file(s).</string>
-    <string name="moved">Moved and verified %1$d file(s).</string>
+    <string name="copied">Copied and verified %1$d item(s).</string>
+    <string name="moved">Moved and verified %1$d item(s).</string>
     <string name="deleted">Deleted %1$d item(s).</string>
     <string name="completed">Done.</string>
     <string name="cancelled">Cancelled. Completed items were kept; refresh the destination before retrying.</string>
@@ -90,6 +90,6 @@
     <string name="lost_picker">The pending operation was interrupted. Select the files again.</string>
     <string name="access_error">Folder unavailable. Reconnect it, or check that the SD card / USB drive is attached.</string>
     <string name="invalid_name">Use a unique name without slashes, reserved punctuation, or trailing spaces.</string>
-    <string name="about">About KindleFiles+</string>
-    <string name="about_body">Version 0.1.0 · Apache License 2.0\nCopyright 2026 guardyanz\n\nBuilt independently with Kotlin, AndroidX and Material icons (Apache-2.0), plus the Android platform. No Amaze or Material Files code or assets are included.\n\nNo account, advertising, analytics or internet permission. Files stay with the storage providers you choose. Sharing hands selected files to another app.\n\nNot affiliated with Amazon. Kindle and Fire are Amazon trademarks.</string>
+    <string name="about">About FolderKit</string>
+    <string name="about_body">Version 0.9.0-rc1 · Apache License 2.0\nCopyright 2026 Ribnik Studio\n\nBuilt independently with Kotlin, AndroidX and Material icons (Apache-2.0), plus the Android platform. No Amaze or Material Files code or assets are included.\n\nNo account, advertising, analytics or internet permission. Files stay with the storage providers you choose. Sharing hands selected files to another app.\n\nThis app was not created or endorsed by Amazon.</string>
 </resources>

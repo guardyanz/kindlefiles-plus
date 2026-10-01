@@ -16,6 +16,8 @@ data class Document(
 
 /** Provider-neutral boundary. Implementations must not overwrite an existing child. */
 interface DocumentStore {
+    /** Stable key for the underlying document, even when two tree grants use different URI forms. */
+    fun identity(id: String): String = id
     fun stat(id: String): Document
     fun children(parent: String): List<Document>
     fun createDirectory(parent: String, name: String): Document

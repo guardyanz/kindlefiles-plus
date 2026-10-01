@@ -16,6 +16,11 @@ class SafStore(context: Context) : DocumentStore {
     private val resolver = app.contentResolver
     private fun file(id: String) = requireNotNull(DocumentFile.fromSingleUri(app, Uri.parse(id)))
 
+    override fun identity(id: String): String {
+        val uri = Uri.parse(id)
+        return "${uri.authority}:${DocumentsContract.getDocumentId(uri)}"
+    }
+
     override fun stat(id: String): Document {
         val file = file(id)
         if (!file.exists() || !file.canRead()) throw IOException("Folder or file unavailable. Reconnect the folder or attach the drive.")

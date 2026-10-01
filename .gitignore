@@ -10,4 +10,7 @@ local.properties
 captures/
 test-artifacts/
 artifacts/
+dist/
+release-secrets/
+*.p12
 graphify-out/

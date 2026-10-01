@@ -59,7 +59,7 @@ class FileEngine(
 
     /** Move deletes only after destination read-back AND a fresh source hash match. */
     fun transfer(source: Document, destination: String, move: Boolean): Document {
-        require(!source.directory) { "Select files to copy or move. Folder transfer is planned for a later version." }
+        if (source.directory) return transferDirectory(source, destination, move)
         vacant(destination, source.name)
         checkpoint()
         val created = store.createFile(destination, source.name, source.mime)
@@ -79,23 +79,102 @@ class FileEngine(
         return created
     }
 
+    /** Copy a bounded tree first; for a move, verify its complete source snapshot before deletion. */
+    private fun transferDirectory(source: Document, destination: String, move: Boolean): Document {
+        val snapshot = snapshot(source)
+        val targetIdentity = store.identity(destination)
+        require(targetIdentity != store.identity(source.id) && snapshot.none { store.identity(it.document.id) == targetIdentity }) {
+            "Choose a destination outside the source folder."
+        }
+        vacant(destination, source.name)
+        checkpoint()
+        val root = store.createDirectory(destination, source.name)
+        rollback(root) {
+            val folders = hashMapOf("" to root.id)
+            val copiedFiles = HashMap<String, String>()
+            snapshot.forEach { item ->
+                checkpoint()
+                val parentPath = item.path.substringBeforeLast('/', "")
+                val parent = requireNotNull(folders[parentPath])
+                if (item.document.directory) {
+                    folders[item.path] = store.createDirectory(parent, item.document.name).id
+                } else {
+                    progress(item.path)
+                    val created = store.createFile(parent, item.document.name, item.document.mime)
+                    val copied = store.input(item.document.id).use { input ->
+                        store.output(created.id).use { pump(input, it).second }
+                    }
+                    require(hash(created.id) == copied) { "Copy verification failed; source retained." }
+                    if (move) require(hash(item.document.id) == copied) { "Source changed during transfer; source retained." }
+                    copiedFiles[item.path] = created.id
+                }
+            }
+            if (move) {
+                val current = snapshot(source)
+                require(current.map { it.path to it.document.directory } == snapshot.map { it.path to it.document.directory }) {
+                    "Source folder changed during transfer; source retained."
+                }
+                snapshot.filterNot { it.document.directory }.forEach { item ->
+                    require(hash(item.document.id) == hash(requireNotNull(copiedFiles[item.path]))) {
+                        "Source changed during transfer; source retained."
+                    }
+                }
+            }
+            checkpoint()
+        }
+        if (move) {
+            try { store.delete(source.id) } catch (failure: Exception) {
+                throw IOException("Copy verified, but '${source.name}' could not be removed from the source. Both copies were kept.", failure)
+            }
+        }
+        return root
+    }
+
+    private data class TreeItem(val path: String, val document: Document)
+
+    private fun snapshot(source: Document): List<TreeItem> {
+        val items = ArrayList<TreeItem>()
+        val visited = hashSetOf(store.identity(source.id))
+        fun visit(folder: Document, path: String, depth: Int) {
+            require(depth <= 32) { "Folder nesting exceeds 32 levels." }
+            val names = HashSet<String>()
+            store.children(folder.id).forEach { child ->
+                checkpoint()
+                require(items.size < 10_000) { "Folder exceeds 10,000 items." }
+                SafeNames.component(child.name)
+                require(names.add(child.name.lowercase(java.util.Locale.ROOT))) { "Folder has names that collide on portable storage." }
+                require(visited.add(store.identity(child.id))) { "Storage provider returned a repeated folder or file." }
+                val childPath = if (path.isEmpty()) child.name else "$path/${child.name}"
+                items += TreeItem(childPath, child)
+                if (child.directory) visit(child, childPath, depth + 1)
+            }
+        }
+        visit(source, "", 0)
+        return items
+    }
+
     fun zip(sources: List<Document>, destination: String, name: String, limits: ArchiveLimits = ArchiveLimits()): Document {
         require(sources.isNotEmpty()) { "Select at least one file." }
-        require(sources.none { it.directory }) { "Select files to archive. Folder archives are not yet supported." }
         vacant(destination, name)
         val seen = HashSet<String>()
         sources.forEach { require(seen.add(SafeNames.component(it.name).lowercase(java.util.Locale.ROOT))) { "Duplicate archive filename." } }
-        require(sources.size <= limits.entries) { "Too many archive entries." }
+        val entries = sources.flatMap { source ->
+            if (source.directory) listOf(TreeItem("${source.name}/", source)) + snapshot(source).map {
+                TreeItem("${source.name}/${it.path}${if (it.document.directory) "/" else ""}", it.document)
+            } else listOf(TreeItem(source.name, source))
+        }
+        require(entries.size <= limits.entries) { "Too many archive entries." }
+        entries.forEach { SafeNames.archivePath(it.path) }
         val output = store.createFile(destination, name, "application/zip")
         return rollback(output) {
             store.output(output.id).use { raw ->
                 ZipOutputStream(raw.buffered()).use { zip ->
                     var bytes = 0L
-                    sources.forEach { document ->
+                    entries.forEach { (path, document) ->
                         checkpoint()
-                        progress(document.name)
-                        zip.putNextEntry(ZipEntry(document.name))
-                        store.input(document.id).use { bytes += pump(it, zip, limits.bytes - bytes).first }
+                        progress(path)
+                        zip.putNextEntry(ZipEntry(path))
+                        if (!document.directory) store.input(document.id).use { bytes += pump(it, zip, limits.bytes - bytes).first }
                         zip.closeEntry()
                     }
                 }

@@ -6,13 +6,13 @@
 ./gradlew :core:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:assembleRelease
 ```
 
-The core suite exercises verified moves, corrupt providers, source-delete failure, source mutation, cancellation rollback, existing-file collisions, Unicode/empty ZIP round trips, nested archive paths, traversal/absolute/drive/backslash paths, case collisions, expansion and entry limits, truncated ZIP footers, empty archives, SHA-256 vectors, bounded walking and hidden-file handling.
+The core suite exercises verified file/folder moves, nested and empty folder archives, descendant destination refusal, corrupt providers, source-delete failure, source mutation, cancellation rollback, existing-file collisions, Unicode/empty ZIP round trips, nested archive paths, traversal/absolute/drive/backslash paths, case collisions, expansion and entry limits, truncated ZIP footers, empty archives, SHA-256 vectors, bounded walking and hidden-file handling.
 
 Android JVM tests use Robolectric with API 28 and the real Activity/Compose UI to check first launch, navigation, tool preconditions and the About dialog. These do not replace a Fire storage-provider or launcher test.
 
 ## Local environment limitation
 
-The installed Android emulator has no working hardware-acceleration driver. A headless software-mode attempt did not reach an online ADB device and was stopped. No emulator screenshots or successful device tests are claimed. A physical Fire tablet was not connected.
+The installed Android emulator has no working hardware-acceleration driver. A headless software-mode attempt did not reach an online ADB device and was stopped. No emulator screenshots or successful device tests are claimed. The publisher confirmed a physical Fire tablet is not yet available; this is a release blocker under Amazon's presubmission checklist.
 
 ## Device acceptance matrix (pending)
 

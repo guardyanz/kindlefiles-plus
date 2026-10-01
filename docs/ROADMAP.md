@@ -1,6 +1,6 @@
 # Release plan
 
-Android first; Windows deferred to v2. Candidate business model: paid app at USD 1.99, subject to Appstore pricing setup. No billing SDK or paywall is included in this development build.
+Android first; Windows deferred to v2. Planned business model: paid app at USD 1.99, subject to Appstore pricing setup. No billing SDK or paywall is included in this candidate.
 
 ## Week 1 — foundation (implemented in 0.1.0)
 
@@ -12,7 +12,7 @@ Android first; Windows deferred to v2. Candidate business model: paid app at USD
 
 - Physical Fire OS 7/8 tests: internal folders, SD, USB OTG; canceled/revoked permissions, removed drives, read-only volumes and low disk space.
 - Durable WorkManager operation journal with explicit interrupted-job recovery before claiming background transfers.
-- Recursive folder transfer/ZIP creation with destination ancestry checks, collision strategy and source snapshot validation.
+- Recursive folder transfer/ZIP creation with destination ancestry checks, collision strategy and source snapshot validation (implemented in 0.9.0-rc1; physical provider test pending).
 - Provider-aware capability flags; large directory and unknown-size optimization.
 
 ## Week 3 — UX and compatibility
@@ -25,9 +25,9 @@ Android first; Windows deferred to v2. Candidate business model: paid app at USD
 ## Weeks 4–5 — commercial release
 
 - Review branding, original artwork, release dependency/license inventory and Amazon policies.
-- Add publisher contact, host privacy policy, release signing and key recovery documentation.
+- Publisher contact, privacy text, release signing and key recovery documentation prepared. Public policy hosting is pending.
 - Decide paid listing versus Amazon IAP themes/tabs; price configuration outside the codebase.
-- Internal testers, accessibility/device acceptance, signed release APK and store screenshots.
+- Internal testers, accessibility/device acceptance and store screenshots require a physical Fire tablet. A signed private test APK is prepared.
 - No antivirus claims, app-store updater claims, Play Store bypass, or undocumented Amazon library APIs.
 
 ## Windows v2

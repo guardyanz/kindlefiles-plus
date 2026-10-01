@@ -74,7 +74,7 @@ class FilesViewModel(application: Application, private val saved: SavedStateHand
     fun hidden(value: Boolean) { mutable.update { it.copy(hidden = value) } }
     fun sort(value: Sort) { mutable.update { it.copy(sort = value) } }
     fun select(id: String) { mutable.update { it.copy(selected = if (id in it.selected) it.selected - id else it.selected + id) } }
-    fun selectAll() { mutable.update { it.copy(selected = it.visible.filterNot(Document::directory).map(Document::id).toSet()) } }
+    fun selectAll() { mutable.update { it.copy(selected = it.visible.map(Document::id).toSet()) } }
     fun clearSelection() { mutable.update { it.copy(selected = emptySet()) } }
     fun dismissError() { mutable.update { it.copy(error = null) } }
     fun dismissMessage() { mutable.update { it.copy(message = null) } }

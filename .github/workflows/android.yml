@@ -21,7 +21,7 @@ jobs:
           test -n "$SDK_MANAGER"
           "$SDK_MANAGER" --install 'platforms;android-36' 'build-tools;35.0.0'
       - name: Test, lint and build
-        run: bash ./gradlew :core:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+        run: bash ./gradlew :core:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:assembleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: kindlefiles-plus-debug

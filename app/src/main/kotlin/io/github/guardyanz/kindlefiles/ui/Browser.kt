@@ -88,14 +88,14 @@ internal fun Browser(state: BrowserState, model: FilesViewModel, actions: FileAc
 @Composable
 private fun SelectionBar(state: BrowserState, clear: () -> Unit, actions: FileActions, zip: () -> Unit) {
     val selection = state.selection
-    val filesOnly = selection.isNotEmpty() && selection.none { it.directory }
+    val hasItems = selection.isNotEmpty()
     Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).horizontalScroll(rememberScrollState()).padding(horizontal = Space.sm),
         verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = clear) { Icon(Icons.Outlined.Close, stringResource(R.string.clear_selection)) }
         Text(stringResource(R.string.files_selected, selection.size), style = MaterialTheme.typography.labelLarge)
-        TextButton(onClick = { actions.transfer(selection, false) }, enabled = filesOnly) { Text(stringResource(R.string.copy)) }
-        TextButton(onClick = { actions.transfer(selection, true) }, enabled = filesOnly) { Text(stringResource(R.string.move)) }
-        TextButton(onClick = zip, enabled = filesOnly && state.folder != null) { Text(stringResource(R.string.zip)) }
+        TextButton(onClick = { actions.transfer(selection, false) }, enabled = hasItems) { Text(stringResource(R.string.copy)) }
+        TextButton(onClick = { actions.transfer(selection, true) }, enabled = hasItems) { Text(stringResource(R.string.move)) }
+        TextButton(onClick = zip, enabled = hasItems && state.folder != null) { Text(stringResource(R.string.zip)) }
         TextButton(onClick = { actions.delete(selection) }) { Text(stringResource(R.string.delete)) }
     }
 }
@@ -126,10 +126,10 @@ private fun FileRow(file: Document, selected: Boolean, select: () -> Unit, actio
                         if (!file.directory) {
                             DropdownMenuItem(text = { Text(stringResource(R.string.open)) }, onClick = { perform { actions.external(file, false) } })
                             DropdownMenuItem(text = { Text(stringResource(R.string.share)) }, onClick = { perform { actions.external(file, true) } })
-                            DropdownMenuItem(text = { Text(stringResource(R.string.copy)) }, onClick = { perform { actions.transfer(listOf(file), false) } })
-                            DropdownMenuItem(text = { Text(stringResource(R.string.move)) }, onClick = { perform { actions.transfer(listOf(file), true) } })
                             if (file.name.endsWith(".zip", true) && canRename) DropdownMenuItem(text = { Text(stringResource(R.string.unzip)) }, onClick = { perform { actions.unzip(file) } })
                         }
+                        DropdownMenuItem(text = { Text(stringResource(R.string.copy)) }, onClick = { perform { actions.transfer(listOf(file), false) } })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.move)) }, onClick = { perform { actions.transfer(listOf(file), true) } })
                         if (canRename) DropdownMenuItem(text = { Text(stringResource(R.string.rename)) }, onClick = { perform { actions.rename(file) } })
                         DropdownMenuItem(text = { Text(stringResource(R.string.details)) }, onClick = { perform { actions.details(file) } })
                         DropdownMenuItem(text = { Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error) }, onClick = { perform { actions.delete(listOf(file)) } })

@@ -22,6 +22,52 @@ class FileEngineTest {
         assertEquals("a book", store.input(copy.id).reader().readText())
         assertFalse(File(source.id).exists())
     }
+    @Test fun `folder copy and move preserve nested contents and empty folders`() {
+        val store = store()
+        val books = store.createDirectory(store.root.path, "books")
+        val series = store.createDirectory(books.id, "series")
+        store.createDirectory(books.id, "empty")
+        File(series.id, "part 1.epub").writeText("volume one")
+        val usb = store.createDirectory(store.root.path, "usb")
+        val copied = FileEngine(store).transfer(books, usb.id, false)
+        assertEquals("volume one", File(copied.id, "series/part 1.epub").readText())
+        assertTrue(File(copied.id, "empty").isDirectory)
+        assertTrue(File(books.id).exists())
+        val sd = store.createDirectory(store.root.path, "sd")
+        val moved = FileEngine(store).transfer(books, sd.id, true)
+        assertEquals("volume one", File(moved.id, "series/part 1.epub").readText())
+        assertFalse(File(books.id).exists())
+    }
+    @Test fun `folder transfer cannot target its own descendant`() {
+        val store = store()
+        val source = store.createDirectory(store.root.path, "books")
+        val nested = store.createDirectory(source.id, "inside")
+        assertThrows(IllegalArgumentException::class.java) { FileEngine(store).transfer(source, nested.id, true) }
+        assertTrue(store.children(nested.id).isEmpty())
+        val alias = File(source.id, ".").path
+        assertThrows(IllegalArgumentException::class.java) { FileEngine(store).transfer(source, alias, false) }
+    }
+    @Test fun `folder copy rollback preserves source when a nested write corrupts`() {
+        val store = store()
+        val source = store.createDirectory(store.root.path, "books")
+        File(source.id, "story.txt").writeText("read me")
+        val usb = store.createDirectory(store.root.path, "usb")
+        store.corruptWrites = true
+        assertThrows(IllegalArgumentException::class.java) { FileEngine(store).transfer(source, usb.id, true) }
+        assertTrue(File(source.id, "story.txt").exists())
+        assertTrue(store.children(usb.id).isEmpty())
+    }
+    @Test fun `folder zip includes nested and empty folders`() {
+        val store = store()
+        val source = store.createDirectory(store.root.path, "books")
+        val series = store.createDirectory(source.id, "series")
+        store.createDirectory(source.id, "empty")
+        File(series.id, "part.txt").writeText("hello")
+        val archive = FileEngine(store).zip(listOf(source), store.root.path, "folder.zip")
+        val expanded = FileEngine(store).unzip(archive, store.root.path, "expanded")
+        assertEquals("hello", File(expanded.id, "books/series/part.txt").readText())
+        assertTrue(File(expanded.id, "books/empty").isDirectory)
+    }
     @Test fun `corrupted destination keeps source and removes failed copy`() {
         val store = store()
         val source = store.file("book.pdf", "the source")
@@ -164,6 +210,7 @@ private class DiskStore(val root: File) : DocumentStore {
     var corruptWrites = false
     var refuseDelete: String? = null
     var afterWrite: (() -> Unit)? = null
+    override fun identity(id: String): String = File(id).canonicalPath
     fun file(name: String, contents: String): Document = File(root, name).also { it.writeText(contents) }.let { stat(it.path) }
     fun archive(entries: List<Pair<String, String>>): Document {
         val file = File(root, "archive.zip")

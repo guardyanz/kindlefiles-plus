@@ -27,8 +27,8 @@ class NavigationTest {
     }
 
     @Test fun aboutShowsProvenanceAndCanBeDismissed() {
-        compose.onNodeWithContentDescription("About KindleFiles+").performClick()
-        compose.onNodeWithText("About KindleFiles+").assertIsDisplayed()
+        compose.onNodeWithContentDescription("About FolderKit").performClick()
+        compose.onNodeWithText("About FolderKit").assertIsDisplayed()
         compose.onNodeWithText("Close").performClick()
         compose.onNodeWithText("Connect a folder").assertIsDisplayed()
     }
