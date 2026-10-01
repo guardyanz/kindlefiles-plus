@@ -58,7 +58,11 @@ class SafStore(context: Context) : DocumentStore {
         require(children(parent).none { it.name.equals(name, ignoreCase = true) }) { "That name already exists." }
         val uri = DocumentsContract.createDocument(resolver, Uri.parse(parent), mime, name)
             ?: throw IOException("The storage provider could not create '$name'.")
-        try { return stat(uri.toString()) }
+        try {
+            val created = stat(uri.toString())
+            require(created.name == name) { "The storage provider changed '$name' to '${created.name}'. No output was kept." }
+            return created
+        }
         catch (failure: Exception) {
             try {
                 check(DocumentsContract.deleteDocument(resolver, uri))
