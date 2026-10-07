@@ -31,7 +31,7 @@ try {
     }
     if (!(Test-Path -LiteralPath $unsigned)) { throw "Unsigned APK not found: $unsigned" }
     $inputBadging = & $aapt dump badging $unsigned
-    if ($LASTEXITCODE -ne 0 -or ($inputBadging -notmatch "package: name='io.github.guardyanz.kindlefiles'.*versionName='$([regex]::Escape($version))'")) {
+    if ($LASTEXITCODE -ne 0 -or (($inputBadging -join "`n") -notmatch "package: name='io.github.guardyanz.kindlefiles'.*versionName='$([regex]::Escape($version))'")) {
         throw 'Unsigned APK package or version does not match this checkout.'
     }
     $dist = Join-Path $root 'dist'
@@ -39,13 +39,13 @@ try {
     $aligned = Join-Path $dist 'folderkit-aligned-unsigned.apk'
     $signed = Join-Path $dist "folderkit-$version.apk"
     if (Test-Path -LiteralPath $signed) { Remove-Item -LiteralPath $signed }
-    & $zipalign -f -p 4 $unsigned $aligned
+    & $zipalign -f -P 16 4 $unsigned $aligned
     if ($LASTEXITCODE -ne 0) { throw 'zipalign failed.' }
     & $apksigner sign --v2-signing-enabled true --v3-signing-enabled true `
         --ks $key --ks-type PKCS12 --ks-key-alias folderkit `
         --ks-pass "file:$passwordFile" --out $signed $aligned
     if ($LASTEXITCODE -ne 0) { throw 'APK signing failed.' }
-    & $zipalign -c 4 $signed
+    & $zipalign -c -P 16 4 $signed
     if ($LASTEXITCODE -ne 0) { throw 'Signed APK alignment failed.' }
     $verification = & $apksigner verify --verbose --print-certs $signed
     if ($LASTEXITCODE -ne 0) { throw 'APK signature verification failed.' }

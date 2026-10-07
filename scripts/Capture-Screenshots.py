@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import struct
 import subprocess
+import sys
 import time
 import xml.etree.ElementTree as ET
 import zipfile
@@ -140,7 +141,28 @@ def restart():
     adb("shell", "am", "force-stop", PACKAGE)
     adb("shell", "am", "start", "-n", f"{PACKAGE}/.MainActivity")
     time.sleep(4)
-    wait("Connect a folder")
+    wait("About FolderKit", "content-desc")
+
+
+def scroll_to(label, attribute="text"):
+    for _ in range(8):
+        tree = state()
+        if find(tree, label, attribute) is not None:
+            return
+        scrollable = [n for n in tree.iter("node") if n.get("scrollable") == "true"]
+        areas = []
+        for node in scrollable:
+            bounds = list(map(int, re.findall(r"\d+", node.get("bounds", ""))))
+            if len(bounds) == 4:
+                x1, y1, x2, y2 = bounds
+                areas.append(((x2-x1)*(y2-y1), bounds))
+        if not areas:
+            raise RuntimeError(f"No visible scroll container for {label}")
+        _, (x1, y1, x2, y2) = max(areas)
+        x = (x1+x2)//2
+        adb("shell", "input", "swipe", str(x), str(y1+(y2-y1)*4//5), str(x), str(y1+(y2-y1)//5), "400")
+        time.sleep(1)
+    raise RuntimeError(f"Could not scroll to {label}")
 
 
 def motion_preview():
@@ -175,21 +197,37 @@ def verify_variants():
     wait("Search this folder")
     screen("qa-dark-browser")
     adb("shell", "cmd", "uimode", "night", "no")
-    adb("shell", "settings", "put", "system", "user_rotation", "1")
-    time.sleep(3)
-    tap("My places")
-    screen("qa-light-portrait")
+
+
+def compact_main():
+    apk = next((ROOT / "artifacts" / "apk").glob("*.apk"))
+    print(adb("shell", "wm", "size"), flush=True)
+    adb("shell", "wm", "density", "320")
+    samples()
+    print(adb("install", "-r", str(apk)), flush=True)
+    restart()
+    if screen("qa-compact-places") != (800, 1280):
+        raise RuntimeError("Compact profile must have native portrait resolution.")
+    connect_sample_folder()
+    tap("Save favorite", "content-desc")
+    tap("Books")
+    tap("Save favorite", "content-desc")
     tap("Favorites")
-    wait("Books")
-    adb("shell", "wm", "density", "640")
+    screen("qa-compact-favorites")
     adb("shell", "settings", "put", "system", "font_scale", "2.0")
     restart()
     tap("Favorites")
     wait("Books")
     screen("qa-compact-large-text")
     tap("File tools")
-    wait("Find duplicates")
+    scroll_to("Scan current folder")
+    wait("Scan current folder")
     screen("qa-compact-tools")
+    (OUT / "compact-capture.json").write_text(json.dumps({
+        "device": "AOSP API 28 Nexus 7, native portrait 800x1280, 320dpi (400x640dp)",
+        "apkSha256": hashlib.sha256(apk.read_bytes()).hexdigest(), "largeFontScale": 2.0,
+        "screenshots": sorted(p.name for p in OUT.glob("qa-*.png")),
+    }, indent=2) + "\n")
 
 
 def main():
@@ -255,7 +293,10 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        if "--compact-only" in sys.argv:
+            compact_main()
+        else:
+            main()
     except Exception:
         screen("failure")
         raise

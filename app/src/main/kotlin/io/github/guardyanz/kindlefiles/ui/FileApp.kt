@@ -58,7 +58,8 @@ fun FileApp(model: FilesViewModel, connect: () -> Unit, pickFiles: () -> Unit,
         unzip = { file -> nameRequest = NameRequest(R.string.unzip, file.name.substringBeforeLast('.') + "-extracted") { model.unzip(file, it) } },
     )
     val motion = LocalMotionEnabled.current
-    GlassBackdrop { Scaffold(containerColor = Color.Transparent, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
+    GlassBackdrop { Scaffold(containerColor = Color.Transparent, contentColor = MaterialTheme.colorScheme.onSurface,
+        snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding)) {
             val wide = maxWidth >= 840.dp
             Row(Modifier.fillMaxSize()) {
