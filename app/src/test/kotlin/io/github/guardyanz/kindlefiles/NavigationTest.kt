@@ -32,4 +32,18 @@ class NavigationTest {
         compose.onNodeWithText("Close").performClick()
         compose.onNodeWithText("Connect a folder").assertIsDisplayed()
     }
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp-xhdpi")
+    fun compactNavigationRemainsVisibleWhileContentScrolls() {
+        compose.onNodeWithText("Pick downloads / files").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Favorites").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Favorites").assertIsSelected()
+        compose.onNodeWithText("Keep your go-to folders close").assertIsDisplayed()
+        compose.onNodeWithText("File tools").assertIsDisplayed().performClick()
+        compose.onNodeWithText("File tools").assertIsSelected()
+        compose.onNodeWithText("Scan current folder").performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithText("My places").assertIsDisplayed().performClick()
+        compose.onNodeWithText("Connect a folder").performScrollTo().assertIsDisplayed()
+    }
 }

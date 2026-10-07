@@ -27,6 +27,10 @@ jobs:
           name: kindlefiles-plus-debug
           path: app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
+        with:
+          name: kindlefiles-plus-unsigned-release
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: check-reports

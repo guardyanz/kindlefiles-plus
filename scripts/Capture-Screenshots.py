@@ -136,6 +136,62 @@ def connect_sample_folder():
     wait("Search this folder")
 
 
+def restart():
+    adb("shell", "am", "force-stop", PACKAGE)
+    adb("shell", "am", "start", "-n", f"{PACKAGE}/.MainActivity")
+    time.sleep(4)
+    wait("Connect a folder")
+
+
+def motion_preview():
+    for setting in ("window_animation_scale", "transition_animation_scale", "animator_duration_scale"):
+        adb("shell", "settings", "put", "global", setting, "1")
+    time.sleep(2)
+    tree = state()
+    nodes = [find(tree, label) for label in ("My places", "Favorites", "File tools", "Browse files")]
+    if any(node is None for node in nodes):
+        raise RuntimeError("Navigation controls missing before motion recording.")
+    recorder = subprocess.Popen(["adb", "shell", "screenrecord", "--size", "1280x800", "--bit-rate", "3000000",
+                                 "--time-limit", "12", "/sdcard/folderkit-motion.mp4"], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+    time.sleep(1)
+    for node in nodes:
+        tap_node(node)
+        time.sleep(.6)
+    tap("Remove favorite", "content-desc")
+    tap("Save favorite", "content-desc")
+    _, error = recorder.communicate(timeout=20)
+    if recorder.returncode:
+        raise RuntimeError(f"Motion recording failed: {error}")
+    adb("pull", "/sdcard/folderkit-motion.mp4", str(OUT / "folderkit-motion.mp4"))
+    for setting in ("window_animation_scale", "transition_animation_scale", "animator_duration_scale"):
+        adb("shell", "settings", "put", "global", setting, "0")
+
+
+def verify_variants():
+    adb("shell", "cmd", "uimode", "night", "yes")
+    restart()
+    screen("qa-dark-places")
+    tap("Reading")
+    wait("Search this folder")
+    screen("qa-dark-browser")
+    adb("shell", "cmd", "uimode", "night", "no")
+    adb("shell", "settings", "put", "system", "user_rotation", "1")
+    time.sleep(3)
+    tap("My places")
+    screen("qa-light-portrait")
+    tap("Favorites")
+    wait("Books")
+    adb("shell", "wm", "density", "640")
+    adb("shell", "settings", "put", "system", "font_scale", "2.0")
+    restart()
+    tap("Favorites")
+    wait("Books")
+    screen("qa-compact-large-text")
+    tap("File tools")
+    wait("Find duplicates")
+    screen("qa-compact-tools")
+
+
 def main():
     apk = next((ROOT / "artifacts" / "apk").glob("*.apk"))
     print(adb("shell", "wm", "size"), flush=True)
@@ -175,6 +231,14 @@ def main():
     wait("1 duplicate group(s)")
     time.sleep(4)  # Let the completion snackbar leave before capture.
     screen("06-duplicates")
+    tap("Close")
+    tap("Browse files")
+    tap("Select Packing list.txt", "content-desc")
+    wait("1 selected")
+    screen("07-selection")
+    tap("Clear selection", "content-desc")
+    motion_preview()
+    verify_variants()
     metadata = {
         "device": "AOSP Android emulator API 28, Nexus 10 profile",
         "resolution": [2560, 1600],
@@ -182,6 +246,8 @@ def main():
         "apk": apk.name,
         "apkSha256": hashlib.sha256(apk.read_bytes()).hexdigest(),
         "screenshots": sorted(p.name for p in OUT.glob("0*.png")),
+        "verificationScreens": sorted(p.name for p in OUT.glob("qa-*.png")),
+        "motionPreview": "folderkit-motion.mp4",
         "sampleContent": "Original disposable documents; no personal files.",
     }
     (OUT / "capture.json").write_text(json.dumps(metadata, indent=2) + "\n")

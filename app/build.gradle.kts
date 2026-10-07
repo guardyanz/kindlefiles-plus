@@ -11,8 +11,8 @@ android {
         applicationId = "io.github.guardyanz.kindlefiles"
         minSdk = 28
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.9.0-rc1"
+        versionCode = 2
+        versionName = "0.9.0-rc2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

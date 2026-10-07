@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
+param([string]$UnsignedApk = '')
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $key = Join-Path $root 'release-secrets\folderkit-release.p12'
@@ -21,10 +22,18 @@ $version = [regex]::Match($gradleFile, 'versionName\s*=\s*"([^"]+)"').Groups[1].
 if (!$version) { throw 'Could not read versionName.' }
 Push-Location $root
 try {
-    & .\gradlew.bat :app:assembleRelease --console=plain
-    if ($LASTEXITCODE -ne 0) { throw 'Release build failed.' }
-    $unsigned = Join-Path $root 'app\build\outputs\apk\release\app-release-unsigned.apk'
+    if ($UnsignedApk) {
+        $unsigned = (Resolve-Path -LiteralPath $UnsignedApk).Path
+    } else {
+        & .\gradlew.bat :app:assembleRelease --console=plain
+        if ($LASTEXITCODE -ne 0) { throw 'Release build failed.' }
+        $unsigned = Join-Path $root 'app\build\outputs\apk\release\app-release-unsigned.apk'
+    }
     if (!(Test-Path -LiteralPath $unsigned)) { throw "Unsigned APK not found: $unsigned" }
+    $inputBadging = & $aapt dump badging $unsigned
+    if ($LASTEXITCODE -ne 0 -or ($inputBadging -notmatch "package: name='io.github.guardyanz.kindlefiles'.*versionName='$([regex]::Escape($version))'")) {
+        throw 'Unsigned APK package or version does not match this checkout.'
+    }
     $dist = Join-Path $root 'dist'
     New-Item -ItemType Directory -Path $dist -Force | Out-Null
     $aligned = Join-Path $dist 'folderkit-aligned-unsigned.apk'

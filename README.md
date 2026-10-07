@@ -2,7 +2,7 @@
 
 A local file manager for Fire tablets. Kotlin + Jetpack Compose, built independently using Android's Storage Access Framework (SAF) and AndroidX DocumentFile.
 
-**Status: 0.9.0-rc1 private test candidate.** The repository remains `kindlefiles-plus`. Amazon submission awaits physical Fire tablet validation and real store screenshots. No backend, accounts, ads, analytics, Google Play Services or internet permission.
+**Status: 0.9.0-rc2 private test candidate.** The repository remains `kindlefiles-plus`. Amazon submission awaits physical Fire tablet validation. Emulator screenshots are in [store-assets/screenshots](store-assets/screenshots). No backend, accounts, ads, analytics, Google Play Services or internet permission.
 
 ## What works
 
@@ -15,7 +15,7 @@ A local file manager for Fire tablets. Kotlin + Jetpack Compose, built independe
 - Persist folder favorites. Sampled image preview and native video playback. Open PDF/EPUB with a compatible installed reader.
 - Share files using Android's chooser. Choose Kindle if the installed Kindle app offers a compatible share target; no private Amazon API or automatic library upload.
 - Configurable folder widget on launchers that support Android widgets.
-- Adaptive tablet sidebar, compact navigation, light/dark palettes, original launcher vector and Apache-licensed Material icons.
+- Material 3 Expressive theme, tinted glass panels, floating compact navigation, press and selection feedback, and light/dark palettes. Motion follows Android's animation setting. Original launcher vector and Apache-licensed Material icons.
 
 ## Build
 
@@ -43,7 +43,7 @@ To create a local signing key once and build a verified, signed release candidat
 
 The APK appears in ignored `dist/`; key and password are in ignored `release-secrets/`. Back up both outside this computer before any store submission. Never commit signing secrets. See the [Appstore submission pack](docs/APPSTORE.md).
 
-Pinned baseline: AGP 8.13.2, Gradle 8.13, Kotlin 2.2.10, Compose BOM 2024.09.00, AndroidX DocumentFile 1.1.0. Minimum API 28 (Fire OS 7/Android 9); target API 35. Review Amazon's requirements again before submission.
+Pinned baseline: AGP 8.13.2, Gradle 8.13, Kotlin 2.2.10, Compose BOM 2025.11.01, Material 3 1.5.0-alpha09, AndroidX DocumentFile 1.1.0. Expressive APIs require the pinned Material prerelease; the remaining Compose modules use the stable BOM. Minimum API 28 (Fire OS 7/Android 9); target API 35. Review Amazon's requirements again before submission.
 
 ## Storage behavior and limits
 

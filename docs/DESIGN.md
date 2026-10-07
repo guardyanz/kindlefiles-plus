@@ -5,13 +5,21 @@ Framework: Kotlin, Jetpack Compose Material 3. No Google Play Services dependenc
 Audience: consumer Fire tablet owners organizing books, downloads and removable media.
 Offline: all file operations are local; no server, analytics, account, or network permission.
 
-Navigation: one folder stack, a places panel on wide windows, and a places button on compact windows. Tools and favorites are visible destinations; no five-tab dashboard. Android Back walks the folder stack. Dialogs use system Back and visible cancellation.
+Navigation: one folder stack, a floating places panel at 840dp and wider, and a glass navigation bar below the content on compact windows. Tools and favorites are visible destinations. Android Back walks the folder stack. Dialogs use system Back and visible cancellation.
 
 Mobile checkpoint: android-dev and mobile-design guidance read, including design thinking, touch psychology, Android platform, performance, backend, testing and debugging references.
 Principles: 48dp targets; file I/O on IO dispatchers; explicit progress, failure and retry states. Avoid gesture-only actions and loading entire media into memory.
 MFRI: platform 5 + accessibility readiness 4 - interaction 2 - performance 3 - offline dependence 1 = 3. Requires emulator UX validation and real Fire/USB testing before release.
 
-Visual direction: warm paper surfaces, forest green actions, amber folder accents, generous readable rows. Original layout and vector launcher asset. System fonts and Apache-licensed Material icons. Light and dark themes.
+Visual direction: blue-gray light fields, cream glass panels, soft yellow folder accents, and large Material 3 Expressive headings. The supplied visual reference informed the palette, floating navigation and layered shapes; its photographs, logo and UI assets are not included. Folder illustrations are composed from original panels and Apache-licensed Material icons. Fonts are supplied by Android. Light and dark themes use separate contrast palettes.
+
+Glass uses high-opacity translucent fills, gradient light reflections, a specular border and 2dp elevation. The background is a cached static drawing. This works on API 28 without a backdrop-blur library, bitmap capture, shader refraction or continuous animation. Text remains sharp over the tinted surfaces. This is frosted glass styling; it does not claim to reproduce Apple's Liquid Glass rendering.
+
+Motion: MaterialExpressiveTheme with MotionScheme.expressive(), 180–220ms color/page transitions, spring press feedback and button shape changes, favorite emphasis, and an expanding selection toolbar. Animations affect drawing rather than list layout wherever possible. Android's animation scale controls the Compose runtime; custom effects also disable transforms when ValueAnimator reports disabled animations, including changes while the app is open. No idle animation loop is used.
+
+Interaction: tap opens an item, long press selects it, and a visible checkbox offers the same selection action. Overflow menus retain file operations and destructive confirmations. Touch targets remain at least 48dp. Compact destination labels can wrap for enlarged fonts, and scrolling content reserves space for the bottom bar.
+
+Dependency choice: the Expressive theme and motion APIs are in the Material 3 prerelease line. Material 3 1.5.0-alpha09 is pinned explicitly with stable Compose BOM 2025.11.01. Review upstream API changes and repeat API 28 UI checks before upgrading this dependency.
 
 Screen decomposition:
 - Places: connect a folder or pick downloads; large visible buttons, scrollable persistent roots and favorites. Permission failures retain a reconnect action.
