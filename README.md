@@ -17,6 +17,8 @@ A local file manager for Fire tablets. Kotlin + Jetpack Compose, built independe
 - Configurable folder widget on launchers that support Android widgets.
 - Material 3 Expressive theme, tinted glass panels, floating compact navigation, press and selection feedback, and light/dark palettes. Motion follows Android's animation setting. Original launcher vector and Apache-licensed Material icons.
 
+The private [rc2 release](https://github.com/guardyanz/kindlefiles-plus/releases/tag/v0.9.0-rc2) supplies the signed APK, seven tablet screenshots and an interaction video. [UI verification captures](store-assets/verification/README.md) cover dark mode, compact portrait and 200% text.
+
 ## Build
 
 Requirements: JDK 17 or newer (tested with Android Studio JBR 21), Android SDK platform 36 and build tools 35, and an SDK path in `local.properties` or `ANDROID_HOME`.

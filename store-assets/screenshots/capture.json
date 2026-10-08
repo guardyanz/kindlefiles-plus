@@ -5,15 +5,21 @@
     1600
   ],
   "densityDpi": 320,
-  "apk": "folderkit-0.9.0-rc1.apk",
-  "apkSha256": "c393d913dbc22188357bab044ac0f904f887992fcff6104f71f70370502f8d1a",
+  "apk": "folderkit-0.9.0-rc2.apk",
+  "apkSha256": "0e292bf144ec7d49064a1bf685659a561a7fb3ee15d7bcc0603dfc4d4dd20d11",
   "screenshots": [
     "01-places.png",
     "02-browser.png",
     "03-favorites.png",
     "04-archive-actions.png",
     "05-file-tools.png",
-    "06-duplicates.png"
+    "06-duplicates.png",
+    "07-selection.png"
   ],
+  "verificationScreens": [
+    "qa-dark-browser.png",
+    "qa-dark-places.png"
+  ],
+  "motionPreview": "folderkit-motion.mp4",
   "sampleContent": "Original disposable documents; no personal files."
 }

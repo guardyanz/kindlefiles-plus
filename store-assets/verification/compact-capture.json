@@ -1,0 +1,11 @@
+{
+  "device": "AOSP API 28 Nexus 7, native portrait 800x1280, 320dpi (400x640dp)",
+  "apkSha256": "0e292bf144ec7d49064a1bf685659a561a7fb3ee15d7bcc0603dfc4d4dd20d11",
+  "largeFontScale": 2.0,
+  "screenshots": [
+    "qa-compact-favorites.png",
+    "qa-compact-large-text.png",
+    "qa-compact-places.png",
+    "qa-compact-tools.png"
+  ]
+}

@@ -8,7 +8,7 @@
 
 The core suite exercises verified file/folder moves, nested and empty folder archives, descendant destination refusal, corrupt providers, source-delete failure, source mutation, cancellation rollback, existing-file collisions, Unicode/empty ZIP round trips, nested archive paths, traversal/absolute/drive/backslash paths, case collisions, expansion and entry limits, truncated ZIP footers, empty archives, SHA-256 vectors, bounded walking and hidden-file handling.
 
-Android JVM tests use Robolectric with API 28 and the real Activity/Compose UI to check first launch, navigation, tool preconditions and the About dialog. These do not replace a Fire storage-provider or launcher test.
+The 22 core tests and 3 Android JVM tests pass. UI tests use Robolectric with API 28 and the real Activity/Compose UI to check first launch, navigation, tool preconditions and the About dialog. A 360dp test scrolls the Places content and confirms the bottom navigation remains available. These do not replace a Fire storage-provider or launcher test.
 
 ## Local environment limitation
 
@@ -16,14 +16,16 @@ The installed Windows Android emulator has no working hardware-acceleration driv
 
 ## Emulator screenshot capture
 
-The [Tablet screenshots workflow](../.github/workflows/screenshots.yml) downloads an existing signed private release APK and captures its actual UI using ADB. The [successful capture run](https://github.com/guardyanz/kindlefiles-plus/actions/runs/36827704863) used AOSP API 28, x86_64, Nexus 10 profile, 2560×1600 landscape, and 320 dpi. [Store PNGs and provenance](../store-assets/screenshots/README.md) are committed separately from temporary UI dumps and sample documents under ignored `artifacts/`.
+The [Tablet screenshots workflow](../.github/workflows/screenshots.yml) downloads an existing signed private release APK and captures its actual UI using ADB. The [rc2 capture run](https://github.com/guardyanz/kindlefiles-plus/actions/runs/37708694314) uses AOSP API 28, x86_64, Nexus 10 profile, 2560x1600 landscape, and 320 dpi. A separate Nexus 7 job uses its native 800x1280 portrait display at 320 dpi (400x640dp). [Store PNGs and provenance](../store-assets/screenshots/README.md) are committed separately from temporary UI dumps and sample documents under ignored `artifacts/`.
 
-The capture journey launches the signed app, grants access to a disposable Downloads subfolder through the real system picker, browses folders, saves favorites, opens the ZIP actions menu, and scans an identical pair of documents. This confirms those UI paths on AOSP; it does not exercise transfers, archive extraction, USB/SD hardware, Fire OS providers, or Fire launchers.
+The capture journey launches the signed app, grants access to a disposable Downloads subfolder through the real system picker, browses folders, saves favorites, opens the ZIP actions menu, scans an identical pair of documents and selects a file. A native screen recording captures page and favorite interactions with animation scales enabled. Still captures disable animations. Additional captures check dark Places/browser screens, compact favorites and tools with 200% font scaling. See [UI verification evidence](../store-assets/verification/README.md).
+
+These journeys confirm UI paths on AOSP; they do not exercise transfers, archive extraction, USB/SD hardware, Fire OS providers, or Fire launchers. The [rc2 build checks](https://github.com/guardyanz/kindlefiles-plus/actions/runs/37701672858) passed core/UI tests, lint, debug and release builds before signing.
 
 To repeat against an uploaded private release:
 
 ```sh
-gh workflow run screenshots.yml -f release_tag=v0.9.0-rc1
+gh workflow run screenshots.yml -f release_tag=v0.9.0-rc2
 ```
 
 ## Device acceptance matrix (pending)

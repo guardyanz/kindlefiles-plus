@@ -39,8 +39,8 @@ Target audience: general utility; not designed for children. Complete the conten
 ## Assets
 
 - `store-assets/folderkit-114.png` and `store-assets/folderkit-512.png` are original transparent PNGs in Amazon's required dimensions. The source is `scripts/Export-StoreIcons.py`.
-- [Six screenshots](../store-assets/screenshots/README.md) are captured directly from the signed `0.9.0-rc1` APK on an AOSP Android API 28 tablet emulator. The unedited PNGs are 2560×1600, an [allowed tablet resolution](https://developer.amazon.com/docs/app-submission/appstore-details.html), and show Places, browsing, favorites, ZIP actions, tools, and duplicates with original sample documents. They show the actual app UI on Android; they are not captures of Fire OS or evidence of physical Fire hardware testing. Recapture if the submitted app UI changes.
-- Promotional image/video are optional and intentionally omitted.
+- [Seven screenshots](../store-assets/screenshots/README.md) are captured directly from the signed `0.9.0-rc2` APK on an AOSP Android API 28 tablet emulator. The unedited PNGs are 2560x1600, an [allowed tablet resolution](https://developer.amazon.com/docs/app-submission/appstore-details.html), and show Places, browsing, favorites, ZIP actions, tools, duplicates and file selection with original sample documents. They show the actual app UI on Android; they are not captures of Fire OS or evidence of physical Fire hardware testing. Recapture if the submitted app UI changes.
+- An emulator recording demonstrates navigation and favorite interactions. It is review material, not a promotional trailer. A promotional image remains optional and is omitted.
 
 ## Submission gate
 
@@ -50,4 +50,4 @@ Target audience: general utility; not designed for children. Complete the conten
 4. In the Amazon Developer Console, supply publisher identity, payment/banking/tax details for a paid app, content rating, privacy response, supported Fire tablets, the listing fields above, icons/screenshots, and the signed APK. Exclude Fire TV devices. Review Amazon's DRM choice and test the resulting paid install.
 5. Build the final binary from a reviewed commit, verify its SHA-256 and signature, then record the exact submitted version code and certificate SHA-256. Do not change the signing key for subsequent updates.
 
-The signed `0.9.0-rc1` APK is a private test candidate. After physical validation, advance `versionCode` and `versionName`, rerun checks, and sign the final build.
+The signed `0.9.0-rc2` APK is a private test candidate. After physical validation, advance `versionCode` and `versionName`, rerun checks, and sign the final build.
