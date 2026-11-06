@@ -2,7 +2,30 @@
 
 A local file manager for Fire tablets. Kotlin + Jetpack Compose, built independently using Android's Storage Access Framework (SAF) and AndroidX DocumentFile.
 
-**Status: 0.9.0-rc2 private test candidate.** The repository remains `kindlefiles-plus`. Amazon submission awaits physical Fire tablet validation. Emulator screenshots are in [store-assets/screenshots](store-assets/screenshots). No backend, accounts, ads, analytics, Google Play Services or internet permission.
+[![Android checks](https://github.com/guardyanz/kindlefiles-plus/actions/workflows/android.yml/badge.svg)](https://github.com/guardyanz/kindlefiles-plus/actions/workflows/android.yml)
+[![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Public beta](https://img.shields.io/badge/status-public_beta-yellow.svg)](https://github.com/guardyanz/kindlefiles-plus/releases/tag/v0.9.0-rc2)
+
+**Public beta: 0.9.0-rc2.** No backend, accounts, ads, analytics, Google Play Services or internet permission. The source repository keeps its original `kindlefiles-plus` URL. Physical Fire tablet validation is still pending; this is not an Amazon Appstore release.
+
+**[Download the signed APK](https://github.com/guardyanz/kindlefiles-plus/releases/download/v0.9.0-rc2/folderkit-0.9.0-rc2.apk)** · **[Watch the interaction demo](https://github.com/guardyanz/kindlefiles-plus/releases/download/v0.9.0-rc2/folderkit-motion.mp4)** · [Report a bug](https://github.com/guardyanz/kindlefiles-plus/issues/new?template=bug_report.yml)
+
+![FolderKit browsing a folder on a tablet](store-assets/screenshots/02-browser.png)
+
+<p>
+  <img src="store-assets/verification/qa-dark-places.png" alt="FolderKit places in dark mode" width="49%">
+  <img src="store-assets/screenshots/06-duplicates.png" alt="FolderKit duplicate file review" width="49%">
+</p>
+
+These are captures of the signed app on an AOSP emulator, with disposable sample files. See the [screenshot provenance](store-assets/screenshots/README.md) and [UI verification](store-assets/verification/README.md); they do not establish compatibility with physical Fire OS storage providers.
+
+## Try the beta
+
+1. Download the APK above on an Android 9+ device or Fire tablet running Fire OS 7+.
+2. Allow installation from your chosen browser or file app when Android asks, then install FolderKit.
+3. Choose **Connect a folder**, grant access to a disposable test folder, and try browsing, copying, ZIP tools and duplicate review.
+
+For a first run, use copies of files you can replace. Read [storage behavior and limits](#storage-behavior-and-limits) before moving or deleting files. Release assets include SHA-256 checksums. Existing Kindle e-ink devices are not supported.
 
 ## What works
 
@@ -17,7 +40,7 @@ A local file manager for Fire tablets. Kotlin + Jetpack Compose, built independe
 - Configurable folder widget on launchers that support Android widgets.
 - Material 3 Expressive theme, tinted glass panels, floating compact navigation, press and selection feedback, and light/dark palettes. Motion follows Android's animation setting. Original launcher vector and Apache-licensed Material icons.
 
-The private [rc2 release](https://github.com/guardyanz/kindlefiles-plus/releases/tag/v0.9.0-rc2) supplies the signed APK, seven tablet screenshots and an interaction video. [UI verification captures](store-assets/verification/README.md) cover dark mode, compact portrait and 200% text.
+The [rc2 beta release](https://github.com/guardyanz/kindlefiles-plus/releases/tag/v0.9.0-rc2) supplies the signed APK, seven tablet screenshots and an interaction video. [UI verification captures](store-assets/verification/README.md) cover dark mode, compact portrait and 200% text.
 
 ## Build
 
@@ -30,7 +53,8 @@ Requirements: JDK 17 or newer (tested with Android Studio JBR 21), Android SDK p
 Windows PowerShell:
 
 ```powershell
-$env:JAVA_HOME = 'C:/Program Files/Android/Android Studio/jbr'
+$env:JAVA_HOME = '<path-to-your-JDK-17-or-newer>'
+$env:ANDROID_HOME = '<path-to-your-Android-SDK>'
 .\gradlew.bat :core:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
 ```
 
@@ -66,6 +90,10 @@ docs/  Design, release plan, device test matrix, privacy and licensing notes
 ```
 
 See [design decisions](docs/DESIGN.md), [Appstore submission pack](docs/APPSTORE.md), [release roadmap](docs/ROADMAP.md), [test results and device matrix](docs/TESTING.md), [privacy](docs/PRIVACY.md) and [third-party notices](NOTICE).
+
+## Contribute
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). Useful contributions include real Fire tablet compatibility reports, document-provider regression cases, accessibility improvements and translations. Describe the device, OS version and storage provider in a bug report; never attach personal files or signing keys.
 
 ## Licensing and provenance
 

@@ -1,0 +1,30 @@
+name: Bug report
+description: Report a reproducible FolderKit problem using disposable test files.
+title: "[Bug] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: FolderKit version
+      placeholder: 0.9.0-rc2
+    validations:
+      required: true
+  - type: textarea
+    id: device
+    attributes:
+      label: Device, OS and storage provider
+      description: Include Fire OS or Android version, physical device or emulator, and internal/SD/USB/cloud provider.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps, expected result and actual result
+      description: Use disposable files. Do not upload personal documents, credentials or signing keys.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or redacted logs
+      description: Remove names, private paths and personal file contents first.
